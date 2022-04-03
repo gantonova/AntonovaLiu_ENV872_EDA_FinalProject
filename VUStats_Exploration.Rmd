@@ -1,0 +1,21 @@
+---
+title: "VUStats Data Exploration"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load the Data}
+
+#Load the data
+View(Visitation_by_Month)
+library(readr)
+Visitation_by_Month <- read_csv("Visitation by Month.csv")
+```
+```{r Wrangle the data}
+
+
+```
+
