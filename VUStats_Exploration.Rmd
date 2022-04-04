@@ -40,7 +40,8 @@ head(Visitation_by_month_gathered)
 summary(Visitation_by_month_gathered$Recreational_Visits)
 
 Visitation_by_month_plot <- ggplot(Visitation_by_month_gathered, aes(x = Date, y = Recreational_Visits)) +
-  geom_point()
+  geom_point()+
+  geom_smooth()
 print(Visitation_by_month_plot)
 
 
