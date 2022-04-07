@@ -13,10 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r Load the Data}
 
 #Load the data
-View(Visitation_by_Month)
+
 library(readr)
 Visitation_by_Month <- read_csv("./Visitation_by_Month.csv")
 getwd()
+View(Visitation_by_Month)
 ```
 ```{r Wrangle the data}
 #Pivot Longer to create a tidy dataset
@@ -60,6 +61,35 @@ print(visitation_by_month_plot2)
 ```
 
 ```{r Time Series Analysis of Visitation Data}
+
+#Question: Has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019?
+
+Visitation_by_month_gathered_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency = 12)
+
+# Generate the decomposition
+Visitation_by_month_Decomposed <- stl(Visitation_by_month_gathered_ts, s.window = "periodic")
+
+# Visualize the decomposed series. 
+plot(Visitation_by_month_Decomposed)
+
+#mostly monotonic trend - visitation appears to be decreasing overall
+
+# Run SMK test
+library(Kendall)
+Visitation_by_month_trend1 <- Kendall::SeasonalMannKendall(Visitation_by_month_gathered_ts)
+
+#Answer: The seasonal Mann-Kendall test is the most appropriate because this ozone data has seasonality as seen in the decomposed time series plot and is non-parametric.
+
+# Inspect results
+Visitation_by_month_trend1
+summary(Visitation_by_month_trend1)
+
+#The p-value us less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park. 
+
+Visitation_by_month_trend2 <- trend::smk.test(Visitation_by_month_gathered_ts)
+# Inspect results
+Visitation_by_month_trend2
+summary(Visitation_by_month_trend2)
 
 
 ```
