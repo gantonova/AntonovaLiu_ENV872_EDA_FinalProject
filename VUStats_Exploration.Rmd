@@ -1,6 +1,9 @@
 ---
 title: "VUStats Data Exploration"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #Load the data
 View(Visitation_by_Month)
 library(readr)
-Visitation_by_Month <- read_csv("Visitation by Month.csv")
+Visitation_by_Month <- read_csv("./Visitation_by_Month.csv")
 getwd()
 ```
 ```{r Wrangle the data}
@@ -46,12 +49,17 @@ Visitation_by_month_plot <- ggplot(Visitation_by_month_gathered, aes(x = Date, y
   geom_smooth()
 print(Visitation_by_month_plot)
 
-visitatation_by_month_plot2 <- ggplot(Visitation_by_month_gathered, aes(x = Month, y = Recreational_Visits, label=TRUE, abbr=TRUE, group=factor(Year), color=factor(Year))) +
+visitation_by_month_plot2 <- ggplot(Visitation_by_month_gathered, aes(x = Month, y = Recreational_Visits, label=TRUE, abbr=TRUE, group=factor(Year), color=factor(Year))) +
   geom_line() +
   geom_point() +
-  labs(x="Month", colour="Year", y = "Recreationa Visits")
-print(visitatation_by_month_plot2)
+  labs(x="Month", colour="Year", y = "Recreational Visits")
+print(visitation_by_month_plot2)
 
+
+
+```
+
+```{r Time Series Analysis of Visitation Data}
 
 
 ```
