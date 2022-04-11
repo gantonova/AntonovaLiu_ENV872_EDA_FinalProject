@@ -1,0 +1,174 @@
+---
+title: "Fire and REcreational Visitation in Yosemite 1999-2019"
+author: "Elsie Liu, Gaby Antonova"
+date: "4/9/2022"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+library(plyr)
+library(nlme)
+library(ggnewscale)
+library(readr)
+fire <- read.csv("Fire300milesBuffer.csv")
+Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
+```
+# Fire
+## Data Wrangling
+```{r datawrangling}
+fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
+fire.p <- fire %>%
+  select(Date, REPORT_AC) %>%
+  mutate(Year= year(Date)) %>%
+  mutate(Month= month(Date)) %>%
+  filter(Year >1998 & Year < 2020) %>%
+  mutate(count = 1) %>%
+  drop_na()
+  
+fire.sum <- fire.p%>%
+  group_by(Year, Month) %>%
+  dplyr::summarize(summonth = sum(REPORT_AC),
+            Count = sum(count)) %>%
+  mutate(Date = ym(paste(Year, Month,sep = "-")))
+```
+## Timeseries analysis for fire data
+```{r fire time series}
+library(Kendall)
+fire.ts <- ts(fire.sum$summonth, start = c(1992,2,1), frequency = 12)
+#decompose
+fire.Decomposed <- stl(fire.ts, s.window = "periodic")
+plot(fire.Decomposed, main = "Fire Extent Decomposed")
+#Mann Kendall test
+fire.trend1 <- Kendall::SeasonalMannKendall(fire.ts)
+summary(fire.trend1)
+
+```
+
+-------------
+# Visitation data analysis
+
+
+## Data wrangling for visitation data
+```{r Wrangle the data}
+#Pivot Longer to create a tidy dataset
+library(tidyverse)
+
+# Gather nutrient data into one column using pivot_longer
+Visitation_by_month_gathered <- Visitation_by_Month %>%
+  pivot_longer(JAN:DEC, names_to = "Month", values_to = "Recreational_Visits")
+
+#Create a date column
+
+library(lubridate)
+Visitation_by_month_gathered$Date <- ymd( paste(Visitation_by_month_gathered$Year, Visitation_by_month_gathered$Month, "1", sep="-") )
+head(Visitation_by_month_gathered)
+
+Visitation_by_month_gathered <- filter(Visitation_by_month_gathered, Year > 1998 & Year < 2020 )
+Visitation_by_month_gathered$Month <- month(Visitation_by_month_gathered$Date)
+```
+
+## Data Exploration
+
+```{r Data Exploration, echo=TRUE}
+
+library(ggplot2)
+head(Visitation_by_month_gathered)
+summary(Visitation_by_month_gathered$Recreational_Visits)
+
+Visitation_by_month_plot <- ggplot(Visitation_by_month_gathered, aes(x = Date, y = Recreational_Visits)) +
+  geom_point()+
+  geom_smooth()+
+  labs(x="Year", colour="Year", y = "Recreational Visits")
+print(Visitation_by_month_plot)
+
+visitation_by_month_plot2 <- ggplot(Visitation_by_month_gathered, aes(x = Month, y = Recreational_Visits, label=TRUE, abbr=TRUE, group=factor(Year), color=factor(Year))) +
+  geom_line() +
+  geom_point() +
+  labs(x="Month", colour="Year", y = "Recreational Visits")+
+  scale_x_continuous(breaks = 1:12)
+print(visitation_by_month_plot2)
+
+
+
+```
+
+## Time Series Analysis of Visitation Data
+
+```{r Time Series Analysis of Visitation Data}
+
+#Question: Has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019?
+
+Visitation_by_month_gathered_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency = 12)
+
+# Generate the decomposition
+Visitation_by_month_Decomposed <- stl(Visitation_by_month_gathered_ts, s.window = "periodic")
+
+# Visualize the decomposed series. 
+plot(Visitation_by_month_Decomposed)
+
+#mostly monotonic trend - visitation appears to be decreasing overall
+
+# Run SMK test
+
+Visitation_by_month_trend1 <- Kendall::SeasonalMannKendall(Visitation_by_month_gathered_ts)
+
+#Answer: The seasonal Mann-Kendall test is the most appropriate because this ozone data has seasonality as seen in the decomposed time series plot and is non-parametric.
+
+# Inspect results
+Visitation_by_month_trend1
+summary(Visitation_by_month_trend1)
+
+#The p-value us less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park. 
+
+Visitation_by_month_trend2 <- trend::smk.test(Visitation_by_month_gathered_ts)
+# Inspect results
+Visitation_by_month_trend2
+summary(Visitation_by_month_trend2)
+
+
+```
+
+# Modeling relationship between visitation and fire
+
+```{r models}
+library(corrplot)
+yosefire <- inner_join(Visitation_by_month_gathered,fire.sum, by="Date")
+yosefire <- yosefire%>%
+  select(Recreational_Visits:Count) %>%
+  filter(Count<100)
+colnames(yosefire)<- c("Visits","Date", "Year","Month","Sumfire","Firecounts")
+write.csv(yosefire, "./Yosefire.csv")
+yosecorr <- cor(yosefire[,c(1,4:6)])
+corrplot(yosecorr,method = "number",insig = "label_sig",
+         sig.level = c(.05))
+#pairs(yosefire)
+
+#run linear model
+mod.lmfull <- lm(data=yosefire, Visits ~ Year + Month + Sumfire + Firecounts)
+summary(mod.lmfull)
+step(mod.lmfull)
+
+mod.lmfin <- update(mod.lmfull,.~.-Year-Sumfire)
+summary(mod.lmfin)
+par(mfrow=c(2,2))
+plot(mod.lmfin)
+
+#plot model fit
+coef <- mod.lmfin$coefficients
+yosefire$fit <- coef[1]+ coef[2]*yosefire$Month + coef[3]*yosefire$Firecounts
+ggplot() +
+  geom_line(data = yosefire, aes(x = Date, y = fit, color="Fit")) +
+  geom_line(data = yosefire, aes(x = Date, y = Visits, color = "Real")) +
+  theme_bw() +
+  ggtitle("Number of Visits through time") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  xlab("Date") +
+  ylab("Number of Visits")+
+  scale_color_manual(name = "", values = c("Real" = "red", "Fit" = "blue"))
+  
+```
+
