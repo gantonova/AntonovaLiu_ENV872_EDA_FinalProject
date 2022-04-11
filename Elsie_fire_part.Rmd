@@ -34,6 +34,12 @@ fire.sum <- fire.p%>%
   dplyr::summarize(summonth = sum(REPORT_AC),
             Count = sum(count)) %>%
   mutate(Date = ym(paste(Year, Month,sep = "-")))
+fire.yearsum <- fire.p%>%
+  group_by(Year) %>%
+  dplyr::summarize(summonth = sum(REPORT_AC),
+                   meanmonth = mean(REPORT_AC),
+            Count = sum(count)) 
+
 ```
 ## Timeseries analysis for fire data
 ```{r fire time series}
@@ -41,10 +47,19 @@ library(Kendall)
 fire.ts <- ts(fire.sum$summonth, start = c(1992,2,1), frequency = 12)
 #decompose
 fire.Decomposed <- stl(fire.ts, s.window = "periodic")
-plot(fire.Decomposed, main = "Fire Extent Decomposed")
+plot(fire.ts.year, main = "Fire Extent Decomposed")
 #Mann Kendall test
 fire.trend1 <- Kendall::SeasonalMannKendall(fire.ts)
 summary(fire.trend1)
+
+#year time series
+fire.ts.year <- ts(fire.yearsum$summonth, start = c(1992,2,1), frequency = 1)
+#decompose
+fire.year.Decomposed <- stl(fire.ts.year, s.window = "periodic")
+plot(fire.Decomposed, main = "Fire Extent Decomposed")
+#Mann Kendall test
+fire.trend1.year <- Kendall::SeasonalMannKendall(fire.ts.year)
+summary(fire.trend1.year)
 
 ```
 
