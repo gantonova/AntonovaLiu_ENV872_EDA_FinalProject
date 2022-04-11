@@ -21,6 +21,13 @@ Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
 ## Data Wrangling
 ```{r datawrangling}
 fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
+ggplot(data = fire)+
+  geom_point(aes(x = Date,y = REPORT_AC,color="red"))+
+  ylab("Fire Extent (Acre)")+
+  scale_x_date(#date_breaks = "20 years", 
+                 #labels=date_format("%Y"),
+                 limits = as.Date(c('1900-01-01','2020-12-31')))
+
 fire.p <- fire %>%
   select(Date, REPORT_AC) %>%
   mutate(Year= year(Date)) %>%
@@ -28,12 +35,13 @@ fire.p <- fire %>%
   filter(Year >1998 & Year < 2020) %>%
   mutate(count = 1) %>%
   drop_na()
-  
+
 fire.sum <- fire.p%>%
   group_by(Year, Month) %>%
   dplyr::summarize(summonth = sum(REPORT_AC),
             Count = sum(count)) %>%
   mutate(Date = ym(paste(Year, Month,sep = "-")))
+
 ```
 ## Timeseries analysis for fire data
 ```{r fire time series}
