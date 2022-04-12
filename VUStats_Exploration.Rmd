@@ -66,9 +66,29 @@ print(visitation_by_month_plot2)
 
 #Question: Has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019?
 
+
+#for yearly data
+Visitation_by_year <- Visitation_by_month_gathered %>%
+  group_by(Year) %>%
+  summarise(summary = mean(Recreational_Visits))
+
+Visitation_by_year$Year <- ym( paste(Visitation_by_year$Year, "1", sep="-"))
+head(Visitation_by_month_gathered)
+
+
+
+Visitation_by_year_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency=6)
+
+#is 12 right
+
+Visitation_by_year_Decomposed <- stl(Visitation_by_year_ts, s.window="periodic")
+
+plot(Visitation_by_year_Decomposed)
+
 Visitation_by_month_gathered_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency = 12)
 
 # Generate the decomposition
+
 Visitation_by_month_Decomposed <- stl(Visitation_by_month_gathered_ts, s.window = "periodic")
 
 # Visualize the decomposed series. 
