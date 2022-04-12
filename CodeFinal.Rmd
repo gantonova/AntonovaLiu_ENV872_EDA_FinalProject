@@ -46,7 +46,7 @@ fire.sum <- fire.p%>%
 ## Timeseries analysis for fire data
 ```{r fire time series}
 library(Kendall)
-fire.ts <- ts(fire.sum$summonth, start = c(1992,2,1), frequency = 12)
+fire.ts <- ts(fire.sum$summonth, start = c(1992,2), frequency = 12)
 #decompose
 fire.Decomposed <- stl(fire.ts, s.window = "periodic")
 plot(fire.Decomposed, main = "Fire Extent Decomposed")

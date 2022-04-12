@@ -22,7 +22,7 @@ Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
 ```{r datawrangling}
 fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
 fire.p <- fire %>%
-  select(Date, REPORT_AC) %>%
+  select(Date, REPORT_AC,GIS_ACRES) %>%
   mutate(Year= year(Date)) %>%
   mutate(Month= month(Date)) %>%
   filter(Year >1998 & Year < 2020) %>%
