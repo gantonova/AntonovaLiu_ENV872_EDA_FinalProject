@@ -162,7 +162,7 @@ corrplot(yosecorr,method = "number",insig = "label_sig",
 #pairs(yosefire)
 
 #run linear model
-mod.lmfull <- lm(data=yosefire, Visits ~ Year + Month + Sumfire + Firecounts)
+# mod.lmfull <- lm(data=yosefire, Visits ~ Year + Month + Sumfire + Firecounts)
 summary(mod.lmfull)
 step(mod.lmfull)
 
@@ -170,6 +170,14 @@ mod.lmfin <- update(mod.lmfull,.~.-Year-Sumfire)
 summary(mod.lmfin)
 par(mfrow=c(2,2))
 plot(mod.lmfin)
+
+mod.lmfactor <- lm(data=yosefire, Visits ~ as.factor(Month) + Sumfire + Firecounts)
+step(mod.lmfactor)
+
+mod.lmfactorfin <- lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts)
+summary(mod.lmfactorfin)
+par(mfrow=c(2,2))
+plot(mod.lmfactorfin)
 
 #plot model fit
 coef <- mod.lmfin$coefficients
