@@ -178,6 +178,8 @@ mod.lmfactorfin <- lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts)
 summary(mod.lmfactorfin)
 par(mfrow=c(2,2))
 plot(mod.lmfactorfin)
+yosefire$fit <- mod.lmfactorfin$fitted.values
+
 
 #plot model fit
 coef <- mod.lmfin$coefficients
