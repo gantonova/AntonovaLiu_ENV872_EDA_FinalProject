@@ -2,10 +2,23 @@
 title: "Fire and REcreational Visitation in Yosemite 1999-2019"
 author: "Elsie Liu, Gaby Antonova"
 date: "4/9/2022"
-output:
-  pdf_document: default
+output: 
+  pdf_document:
+    keep_tex: yes
+    fig_caption: yes
+    number_sections: yes
+geometry: margin=2.54cm
+subtitle: "https://github.com/gantonova/AntonovaLiu_ENV872_EDA_FinalProject"
+fontsize: 12pt
+mainfont: Times New Roman
+
 ---
 
+# Rationale and Research Questions
+
+# Dataset Information
+
+# Exploratory Analysis 
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(lubridate)
@@ -17,8 +30,8 @@ library(readr)
 fire <- read.csv("Fire300milesBuffer.csv")
 Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
 ```
-# Fire
-## Data Wrangling
+
+## Fire Data Wrangling
 ```{r datawrangling}
 fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
 ggplot(data = fire)+
@@ -45,24 +58,8 @@ fire.sum <- fire.p%>%
   mutate(Date = ym(paste(Year, Month,sep = "-")))
 
 ```
-## Timeseries analysis for fire data
-```{r fire time series}
-library(Kendall)
-fire.ts <- ts(fire.sum$summonth, start = c(1992,2), frequency = 12)
-#decompose
-fire.Decomposed <- stl(fire.ts, s.window = "periodic")
-plot(fire.Decomposed, main = "Fire Extent Decomposed")
-#Mann Kendall test
-fire.trend1 <- Kendall::SeasonalMannKendall(fire.ts)
-summary(fire.trend1)
 
-```
-
--------------
-# Visitation data analysis
-
-
-## Data wrangling for visitation data
+## Data wrangling & exploratory analysis for visitation data
 ```{r Wrangle the data}
 #Pivot Longer to create a tidy dataset
 library(tidyverse)
@@ -80,8 +77,6 @@ head(Visitation_by_month_gathered)
 Visitation_by_month_gathered <- filter(Visitation_by_month_gathered, Year > 1998 & Year < 2020 )
 Visitation_by_month_gathered$Month <- month(Visitation_by_month_gathered$Date)
 ```
-
-## Data Exploration
 
 ```{r Data Exploration, echo=TRUE}
 
@@ -110,7 +105,24 @@ print(visitation_by_month_plot2)
 
 ```
 
-## Time Series Analysis of Visitation Data
+# Analysis
+
+## Question 1: Time Series analysis
+
+### Timeseries analysis for fire data
+```{r fire time series}
+library(Kendall)
+fire.ts <- ts(fire.sum$summonth, start = c(1992,2), frequency = 12)
+#decompose
+fire.Decomposed <- stl(fire.ts, s.window = "periodic")
+plot(fire.Decomposed, main = "Fire Extent Decomposed")
+#Mann Kendall test
+fire.trend1 <- Kendall::SeasonalMannKendall(fire.ts)
+summary(fire.trend1)
+
+```
+
+### Time Series Analysis of Visitation Data
 
 ```{r Time Series Analysis of Visitation Data}
 
@@ -146,7 +158,7 @@ summary(Visitation_by_month_trend2)
 
 ```
 
-# Modeling relationship between visitation and fire
+## Question 2: Modeling relationship between visitation and fire
 
 ```{r models}
 library(corrplot)
@@ -196,3 +208,7 @@ ggplot() +
   
 ```
 
+# Summary and Conclusions
+
+
+# References
