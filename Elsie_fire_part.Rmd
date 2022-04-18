@@ -22,7 +22,7 @@ Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
 ```{r datawrangling}
 fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
 fire.p <- fire %>%
-  select(Date, REPORT_AC) %>%
+  select(Date, REPORT_AC,GIS_ACRES) %>%
   mutate(Year= year(Date)) %>%
   mutate(Month= month(Date)) %>%
   filter(Year >1998 & Year < 2020) %>%
@@ -186,6 +186,14 @@ ggplot() +
   xlab("Date") +
   ylab("Number of Visits")+
   scale_color_manual(name = "", values = c("Real" = "red", "Fit" = "blue"))
-  
+
+mod.glm <- glm(data = yosefire, formula = Visits ~ as.factor(Month)+ Year + Sumfire + Firecounts, family = poisson())
+summary(mod.glm)
+plot(mod.glm)
+
+mod.lmfactorint <- lm(data=yosefire, Visits ~ as.factor(Month)*Firecounts)
+summary(mod.lmfactorint)
+par(mfrow=c(2,2))
+plot(mod.lmfactorfin)
 ```
 
