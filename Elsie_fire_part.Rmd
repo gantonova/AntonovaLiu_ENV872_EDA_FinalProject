@@ -172,6 +172,8 @@ summary(mod.lmfin)
 par(mfrow=c(2,2))
 plot(mod.lmfin)
 
+install.packages("kableExtra")
+summ(fit)
 #plot model fit
 coef <- mod.lmfin$coefficients
 yosefire$fit <- coef[1]+ coef[2]*yosefire$Month + coef[3]*yosefire$Firecounts

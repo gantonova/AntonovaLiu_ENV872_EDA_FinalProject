@@ -75,15 +75,13 @@ Visitation_by_year <- Visitation_by_month_gathered %>%
 Visitation_by_year$Year <- ym( paste(Visitation_by_year$Year, "1", sep="-"))
 head(Visitation_by_month_gathered)
 
+Visitation_by_year_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1))
 
+Visitation_by_year_trend<- Kendall::MannKendall(Visitation_by_year_ts)
+Visitation_by_year_trend
 
-Visitation_by_year_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency=6)
+#run a linear regression by vis and year
 
-#is 12 right
-
-Visitation_by_year_Decomposed <- stl(Visitation_by_year_ts, s.window="periodic")
-
-plot(Visitation_by_year_Decomposed)
 
 Visitation_by_month_gathered_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency = 12)
 
