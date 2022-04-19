@@ -18,13 +18,16 @@ mainfont: Times New Roman
 
 Wildfire activity in California has increased five-fold since the 1970s. This is largely due to the drying of vegetation that serves as fuel for fire as climate change causes temperatures to rise. Scientists largely predict that the intensity and frequency of wildfire will continue to increase as climate change persists and the population of people living in wildland areas increases. 
 
-Yosemite National Park is the most visited national park in California and has experienced impacts on natural and recreational resources due to increasing visitation. Fire has shaped the landscape in Yosemite for thousands of years. However, due to the combination of land management practices like fire suppression and the impact of climate change, fire frequency and extent have increased in the last several decades. Extensive fires can result in poor air quality and park closures, which could result in result in reduces visitation numbers in years with frequent and expansive fire events. To understand the relationship between visitation and wildfire in Yosemite, we explore the following research question: Did wildfire frequency and size affect recreational visitation to Yosemite National Park from 1999-2019?
-
+Yosemite National Park is the most visited national park in California and has experienced impacts on natural and recreational resources due to increasing visitation. Fire has also shaped the landscape in Yosemite for thousands of years. However, due to the combination of land management practices like fire suppression and the impact of climate change, fire frequency and extent have increased in the last several decades. Extensive fires can result in poor air quality and park closures, which could result in result in reduces visitation numbers in years with frequent and expansive fire events. To understand the relationship between visitation and wildfire in Yosemite, we explore the following research question: Did wildfire frequency and size affect recreational visitation to Yosemite National Park from 1999-2019? We also examine the question has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019 to understand whether the general perception shared on the NPS website that visitation is generally increasing is supported. 
 
 
 # Dataset Information
 [California Fire Perimeters](https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/explore?location=37.260012%2C-118.992700%2C6.00&showTable=true)
-# Exploratory Analysis 
+
+[NPS VUStats Dataset] (https://irma.nps.gov/STATS/Reports/Park/YOSE)
+The National Park Service VUStats Dataset provides visitation data for every national park unit and is updated on a monthly basis by NPS staff. 
+
+# Load the data and packages
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(lubridate)
@@ -37,7 +40,7 @@ fire <- read.csv("Fire300milesBuffer.csv")
 Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
 ```
 
-## Fire Data Wrangling
+## Fire Data Wrangling and Exploratory Analysis
 ```{r datawrangling}
 fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
 ggplot(data = fire)+
@@ -65,8 +68,9 @@ fire.sum <- fire.p%>%
 
 ```
 
-## Data wrangling & exploratory analysis for visitation data
-```{r Wrangle the data}
+## visitation data wrangling & exploratory analysis
+After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analysing trends over time, we created a date column using the lubridate function. 
+```{r Wrangle the data, echo=FALSE}
 #Pivot Longer to create a tidy dataset
 library(tidyverse)
 
@@ -84,12 +88,15 @@ Visitation_by_month_gathered <- filter(Visitation_by_month_gathered, Year > 1998
 Visitation_by_month_gathered$Month <- month(Visitation_by_month_gathered$Date)
 ```
 
+Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to understand visitation trends. The first scatterplot was used to visualize general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's narrative. The second plot displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.  
+
 ```{r Data Exploration, echo=TRUE}
 
-library(ggplot2)
+
 head(Visitation_by_month_gathered)
 summary(Visitation_by_month_gathered$Recreational_Visits)
 
+library(ggplot2)
 Visitation_by_month_plot <- ggplot(Visitation_by_month_gathered, aes(x = Date, y = Recreational_Visits)) +
   geom_point()+
   geom_smooth()+
@@ -111,7 +118,7 @@ print(visitation_by_month_plot2)
 
 ```
 
-# Analysis
+## Analysis
 
 ## Question 1: Time Series analysis
 
@@ -130,9 +137,11 @@ summary(fire.trend1)
 
 ### Time Series Analysis of Visitation Data
 
-```{r Time Series Analysis of Visitation Data}
+We performed a time series analysis of visitation data to understand the overall trend to examine whether there is an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019. Based on the decomposed plot of the data, the data has seasonality and is trending downwards. 
 
-#Question: Has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019?
+Since the decreasing trend was not consisten with our initial exploratory analysis of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation.
+
+```{r Time Series Analysis of Visitation Data}
 
 Visitation_by_month_gathered_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency = 12)
 
