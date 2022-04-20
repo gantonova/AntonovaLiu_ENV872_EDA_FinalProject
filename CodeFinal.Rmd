@@ -1,9 +1,9 @@
 ---
-title: "Fire and REcreational Visitation in Yosemite 1999-2019"
+title: "Fire and Recreational Visitation in Yosemite 1999-2019"
 author: "Elsie Liu, Gaby Antonova"
-date: "4/9/2022"
+date: "4/21/2022"
 output: 
-  pdf_document:
+  bookdown::pdf_document2:
     keep_tex: yes
     fig_caption: yes
     number_sections: yes
@@ -11,8 +11,17 @@ geometry: margin=2.54cm
 subtitle: "https://github.com/gantonova/AntonovaLiu_ENV872_EDA_FinalProject"
 fontsize: 12pt
 mainfont: Times New Roman
+urlcolor: blue
+fig_width: 6 
+fig_height: 4
 
 ---
+
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
 
 # Rationale and Research Questions
 
@@ -20,210 +29,134 @@ Wildfire activity in California has increased five-fold since the 1970s. This is
 
 Yosemite National Park is the most visited national park in California and has experienced impacts on natural and recreational resources due to increasing visitation. Fire has also shaped the landscape in Yosemite for thousands of years. However, due to the combination of land management practices like fire suppression and the impact of climate change, fire frequency and extent have increased in the last several decades. Extensive fires can result in poor air quality and park closures, which could result in result in reduces visitation numbers in years with frequent and expansive fire events. To understand the relationship between visitation and wildfire in Yosemite, we explore the following research question: Did wildfire frequency and size affect recreational visitation to Yosemite National Park from 1999-2019? We also examine the question has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019 to understand whether the general perception shared on the NPS website that visitation is generally increasing is supported. 
 
-
+\newpage
 # Dataset Information
-[California Fire Perimeters](https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/explore?location=37.260012%2C-118.992700%2C6.00&showTable=true)
+The [California Fire Perimeters](https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/explore?location=37.260012%2C-118.992700%2C6.00&showTable=true) include California's wildfires since the early 20th century. The dataset is provided by California Department of Forestry and Fire Protection.
 
-[NPS VUStats Dataset] (https://irma.nps.gov/STATS/Reports/Park/YOSE)
-The National Park Service VUStats Dataset provides visitation data for every national park unit and is updated on a monthly basis by NPS staff. 
+The [National Park Service VUStats Dataset](https://irma.nps.gov/STATS/Reports/Park/YOSE) provides visitation data for every national park unit and is updated on a monthly basis by NPS staff. 
 
-# Load the data and packages
+# Data Preparation and Exploratory Analysis
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(lubridate)
 library(dplyr)
 library(plyr)
+library(broom)
 library(nlme)
 library(ggnewscale)
 library(readr)
-fire <- read.csv("Fire300milesBuffer.csv")
-Visitation_by_Month <- read_csv("Visitation_by_Month.csv")
+library(knitr)
+knitr::opts_chunk$set(
+  echo = FALSE, message = FALSE, warning = FALSE
+)
+
+```
+
+```{r include=FALSE}
+source("Code/DataWrangling.R")
+source("Code/DataExploration.R")
+source("Code/analysis.R")
 ```
 
 ## Fire Data Wrangling and Exploratory Analysis
-```{r datawrangling}
-fire$Date<- as.Date(fire$ALARM_DATE,format = "%Y/%m/%d")
-ggplot(data = fire)+
-  geom_point(aes(x = Date,y = REPORT_AC,color="red"))+
-  ylab("Fire Extent (Acre)")+
-  scale_x_date(#date_breaks = "20 years", 
-                 #labels=date_format("%Y"),
-                 limits = as.Date(c('1900-01-01','2020-12-31')))+
-  ggtitle("Wildfire around Yosemite 1900-2019")+
-  theme(plot.title = element_text(hjust = 0.5))
 
-fire.p <- fire %>%
-  select(Date, REPORT_AC) %>%
-  mutate(Year= year(Date)) %>%
-  mutate(Month= month(Date)) %>%
-  filter(Year >1998 & Year < 2020) %>%
-  mutate(count = 1) %>%
-  drop_na()
+The wildfire data is stored in the California Fire Perimeters dataset as polygons within a shapefile. Since one of our research questions is to study the relationships between fire happened around the Yousemite National Park and the recreational visits, We first used ArcGIS to extract wildfire polygons within a buffer zone around the Yosemite National Park. By looking back to the AQI heatmaps for previous fire seasons, we roughly estimated the average impact area of wildfires in California and decided to use 300 miles as the distance of the buffer zone (see Figure \@ref(fig:buffer)  & \@ref(fig:AQI) in Appendix). 
+After imported wildfire data into R, we selected only fire extent and recorded time and excluded records without either of these two values. We then formed a new dataset by summarizing fire counts and sum extent by month.
+Figure \@ref(fig:FireExp1) plot all the individual wildfires from 1999 to 2019.
 
-fire.sum <- fire.p%>%
-  group_by(Year, Month) %>%
-  dplyr::summarize(summonth = sum(REPORT_AC),
-            Count = sum(count)) %>%
-  mutate(Date = ym(paste(Year, Month,sep = "-")))
-
+```{r FireExp1, fig.cap="Wildfires within 300 miles buffer zone near Yosemite (1909 to 2019"}
+print(fireplot)
 ```
 
 ## visitation data wrangling & exploratory analysis
 After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analysing trends over time, we created a date column using the lubridate function. 
-```{r Wrangle the data, echo=FALSE}
-#Pivot Longer to create a tidy dataset
-library(tidyverse)
-
-# Gather nutrient data into one column using pivot_longer
-Visitation_by_month_gathered <- Visitation_by_Month %>%
-  pivot_longer(JAN:DEC, names_to = "Month", values_to = "Recreational_Visits")
-
-#Create a date column
-
-library(lubridate)
-Visitation_by_month_gathered$Date <- ymd( paste(Visitation_by_month_gathered$Year, Visitation_by_month_gathered$Month, "1", sep="-") )
-head(Visitation_by_month_gathered)
-
-Visitation_by_month_gathered <- filter(Visitation_by_month_gathered, Year > 1998 & Year < 2020 )
-Visitation_by_month_gathered$Month <- month(Visitation_by_month_gathered$Date)
+```{r Wrangling table, echo=FALSE}
+visit2 <- head(Visitation_by_month_gathered)
+knitr::kable(visit2, col.names = c('Year', 'Month', 'Recreational Visits', 'Date'))
 ```
 
-Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to understand visitation trends. The first scatterplot was used to visualize general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's narrative. The second plot displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.  
+Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to understand visitation trends. Figure \@ref(fig:VisitDataExp1) visualized general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's narrative. Figure \@ref(fig:VisitDataExp2) displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.  
 
-```{r Data Exploration, echo=TRUE}
-
-
-head(Visitation_by_month_gathered)
-summary(Visitation_by_month_gathered$Recreational_Visits)
-
-library(ggplot2)
-Visitation_by_month_plot <- ggplot(Visitation_by_month_gathered, aes(x = Date, y = Recreational_Visits)) +
-  geom_point()+
-  geom_smooth()+
-  labs(x="Year", colour="Year", y = "Recreational Visits") +
-  ggtitle("Visitation to Yosemite National Park") 
+```{r VisitDataExp1, fig.cap="Visitation trends between 1999 and 2019"}
 print(Visitation_by_month_plot)
-
-
-visitation_by_month_plot2 <- ggplot(Visitation_by_month_gathered, aes(x = Month, y = Recreational_Visits, label=TRUE, abbr=TRUE, group=factor(Year), color=factor(Year))) +
-  geom_line() +
-  geom_point() +
-  labs(x="Month", colour="Year", y = "Recreational Visits")+
-  scale_x_continuous(breaks = 1:12)+
-  ggtitle("Visitation to Yosemite National Park by Month")
-
-print(visitation_by_month_plot2)
-
-
-
 ```
 
-## Analysis
+```{r VisitDataExp2, fig.cap="Visitation to Yosemite between 2019-2019 (by month)"}
+print(visitation_by_month_plot2)
+```
+
+\newpage
+
+# Analysis
 
 ## Question 1: Time Series analysis
 
-### Timeseries analysis for fire data
-```{r fire time series}
-library(Kendall)
-fire.ts <- ts(fire.sum$summonth, start = c(1992,2), frequency = 12)
-#decompose
-fire.Decomposed <- stl(fire.ts, s.window = "periodic")
-plot(fire.Decomposed, main = "Fire Extent Decomposed")
-#Mann Kendall test
-fire.trend1 <- Kendall::SeasonalMannKendall(fire.ts)
-summary(fire.trend1)
+To better understand the trend of wildfire and recreational visitation in Yosemite through time, we conducted time series analysis for each dataset separately. 
 
+### Timeseries analysis for fire data
+
+We fist analysed the general and decomposed (seasonal) trend of wildfire data.
+Figure \@ref(fig:TSplotfire) shows that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. One unexpected phenomenon is that, as Figure \@ref(fig:FireExp1) above showed, more larger fires have been recorded after 2000, but the time series analysis here indicates a drop in sum fire extent at the very end of the 20-year period. After checking the processed dataset, we also confirmed a similar drop in fire counts. One possible explanation for these is that there is more incomplete records in 2019 and were dropped in both data selecting and wrangling steps. 
+
+```{r TSplotfire, fig.cap="Time Series analysis for wilfire data in Yosemite (1999-2019)"}
+plot(fire.Decomposed, main = "Fire Extent Decomposed")
 ```
 
 ### Time Series Analysis of Visitation Data
 
-We performed a time series analysis of visitation data to understand the overall trend to examine whether there is an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019. Based on the decomposed plot of the data, the data has seasonality and is trending downwards. 
+We performed a time series analysis of visitation data to understand the overall trend to examine whether there is an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019. Based on the decomposed plot (Fig.\@ref(fig:TSplotvisit)) of the data, the data has seasonality and is trending downwards. 
 
-Since the decreasing trend was not consisten with our initial exploratory analysis of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation.
+Since the decreasing trend was not consisten with our initial exploratory analysis of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation. The p-value is less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park.
 
-```{r Time Series Analysis of Visitation Data}
-
-Visitation_by_month_gathered_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1), frequency = 12)
-
-# Generate the decomposition
-Visitation_by_month_Decomposed <- stl(Visitation_by_month_gathered_ts, s.window = "periodic")
-
-# Visualize the decomposed series. 
+```{r TSplotvisit, fig.cap="Time Series analysis for visitation data in Yosemite (1999-2019)"}
 plot(Visitation_by_month_Decomposed)
-
-#mostly monotonic trend - visitation appears to be decreasing overall
-
-# Run SMK test
-
-Visitation_by_month_trend1 <- Kendall::SeasonalMannKendall(Visitation_by_month_gathered_ts)
-
-#Answer: The seasonal Mann-Kendall test is the most appropriate because this ozone data has seasonality as seen in the decomposed time series plot and is non-parametric.
-
-# Inspect results
-Visitation_by_month_trend1
-summary(Visitation_by_month_trend1)
-
-#The p-value us less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park. 
-
-Visitation_by_month_trend2 <- trend::smk.test(Visitation_by_month_gathered_ts)
-# Inspect results
-Visitation_by_month_trend2
-summary(Visitation_by_month_trend2)
-
-
 ```
 
 ## Question 2: Modeling relationship between visitation and fire
 
-```{r models}
-library(corrplot)
-yosefire <- inner_join(Visitation_by_month_gathered,fire.sum, by="Date")
-yosefire <- yosefire%>%
-  select(Recreational_Visits:Count) %>%
-  filter(Count<100)
-colnames(yosefire)<- c("Visits","Date", "Year","Month","Sumfire","Firecounts")
-write.csv(yosefire, "./Yosefire.csv")
-yosecorr <- cor(yosefire[,c(1,4:6)])
+We used linear model to test our hypothesis of relationship between visitation and fire around Yosemite.
+We first looked at the correlation plot (Fig. \@ref(fig:corrplot)) of the variables and decided to include year, month, sum fire extent, and fire counts as independent variables in our model.
+```{r corrplot, fig.cap="Correlation plot for wildfire, time, and visitation."}
 corrplot(yosecorr,method = "number",insig = "label_sig",
          sig.level = c(.05))
-#pairs(yosefire)
-
-#run linear model
-# mod.lmfull <- lm(data=yosefire, Visits ~ Year + Month + Sumfire + Firecounts)
-summary(mod.lmfull)
-step(mod.lmfull)
-
-mod.lmfin <- update(mod.lmfull,.~.-Year-Sumfire)
-summary(mod.lmfin)
-par(mfrow=c(2,2))
-plot(mod.lmfin)
-
-mod.lmfactor <- lm(data=yosefire, Visits ~ as.factor(Month) + Sumfire + Firecounts)
-step(mod.lmfactor)
-
-mod.lmfactorfin <- lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts)
-summary(mod.lmfactorfin)
-par(mfrow=c(2,2))
-plot(mod.lmfactorfin)
-yosefire$fit <- mod.lmfactorfin$fitted.values
-
-
-#plot model fit
-coef <- mod.lmfin$coefficients
-yosefire$fit <- coef[1]+ coef[2]*yosefire$Month + coef[3]*yosefire$Firecounts
-ggplot() +
-  geom_line(data = yosefire, aes(x = Date, y = fit, color="Fit")) +
-  geom_line(data = yosefire, aes(x = Date, y = Visits, color = "Real")) +
-  theme_bw() +
-  ggtitle("Number of Visits through time") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  xlab("Date") +
-  ylab("Number of Visits")+
-  scale_color_manual(name = "", values = c("Real" = "red", "Fit" = "blue"))
-  
 ```
 
+Since we already seen a nonlinear trend of visitation through months, we set month  as factor for our model. Using the step wise method, the independent variables left in the reduced model include fire counts and month. According to the statistical test, fire counts and several specific months are significant. 
+Table \@ref(tab:regression) below only includes some of the significant variables from the reduced model, the full regression result see Table \@ref(tab:regressionF) in appendix. The adjusted R-square for the model is 0.9103.
+```{r regression}
+lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts) %>%
+  tidy()%>%
+  slice(1,7:10,13)%>%
+  kable(caption = "Table 1. Regression table for the reduced model. ",
+    col.names = c("Predictor", "Estimate", "SE", "t statistic", "p value"),
+    digits = c(0, 1, 1, 2, 3))
+```
+
+Finally, we compared the model fitted value with actual fire extent. The comparasion is showed in Fig. \@ref(fig:fitplot). The plot suggests that our model captured most of the variation of recreational visitation but still missed some peaks.
+
+```{r fitplot, fig.cap="Comparision of linear model fitting result and actual fire extent."}
+print(modelplot)  
+```
+
+\newpage
 # Summary and Conclusions
+This study aim at finiding the effect of wildfire frequency and size on recreational visitation to Yosemite National Park from 1999 to 2019.    
+Through time series analysis, we found that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. The recreational visitation in Yosemite National Park also has seasonality and is trending downwards.     
+By testing linear models with stepwise method, we concluded that monthly fire counts and month of the year are more significant in explaining variation of recreational visitation than year and monthly sum of fire extent. The result  suggest that fire counts may have greater impact on people's outdoor plan than fire size and people might be more sensitive to high fires frequency comparing to larger fires.
 
 
-# References
+\newpage
+# Appendix
+![(#fig:buffer) Buffer Zone Decision. Red, orange, and yellow represents 100, 200, to 300 miles buffer zone.](Output/buffer.JPG){width=50%}
+![(#fig:AQI) An example of AQI map for previous fire season used for estimating impact area of wildfires.](Output/AirQualityMap.JPG){width=50%}
+\newline
+Table of regression model
+\@ref(tab:regressionF)
+```{r regressionF, echo=FALSE}
+lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts) %>%
+  tidy() %>%
+  kable(caption = "Full regression table for the reduced model",
+    col.names = c("Predictor", "Estimate", "SE", "t statistic", "p-value"),
+    digits = c(0, 1, 1, 2, 3))
+```
+

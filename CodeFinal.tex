@@ -1,0 +1,305 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  12pt,
+]{article}
+\title{Fire and Recreational Visitation in Yosemite 1999-2019}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{\url{https://github.com/gantonova/AntonovaLiu_ENV872_EDA_FinalProject}}
+\author{Elsie Liu, Gaby Antonova}
+\date{4/21/2022}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+  \setmainfont[]{Times New Roman}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Fire and Recreational Visitation in Yosemite 1999-2019},
+  pdfauthor={Elsie Liu, Gaby Antonova},
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={blue},
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\maketitle
+
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\newpage
+\listoftables 
+\newpage
+\listoffigures 
+\newpage
+
+\hypertarget{rationale-and-research-questions}{%
+\section{Rationale and Research Questions}\label{rationale-and-research-questions}}
+
+Wildfire activity in California has increased five-fold since the 1970s. This is largely due to the drying of vegetation that serves as fuel for fire as climate change causes temperatures to rise. Scientists largely predict that the intensity and frequency of wildfire will continue to increase as climate change persists and the population of people living in wildland areas increases.
+
+Yosemite National Park is the most visited national park in California and has experienced impacts on natural and recreational resources due to increasing visitation. Fire has also shaped the landscape in Yosemite for thousands of years. However, due to the combination of land management practices like fire suppression and the impact of climate change, fire frequency and extent have increased in the last several decades. Extensive fires can result in poor air quality and park closures, which could result in result in reduces visitation numbers in years with frequent and expansive fire events. To understand the relationship between visitation and wildfire in Yosemite, we explore the following research question: Did wildfire frequency and size affect recreational visitation to Yosemite National Park from 1999-2019? We also examine the question has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019 to understand whether the general perception shared on the NPS website that visitation is generally increasing is supported.
+
+\newpage
+
+\hypertarget{dataset-information}{%
+\section{Dataset Information}\label{dataset-information}}
+
+The \href{https://gis.data.ca.gov/datasets/CALFIRE-Forestry::california-fire-perimeters-all/explore?location=37.260012\%2C-118.992700\%2C6.00\&showTable=true}{California Fire Perimeters} include California's wildfires since the early 20th century. The dataset is provided by California Department of Forestry and Fire Protection.
+
+The \href{https://irma.nps.gov/STATS/Reports/Park/YOSE}{National Park Service VUStats Dataset} provides visitation data for every national park unit and is updated on a monthly basis by NPS staff.
+
+\hypertarget{data-preparation-and-exploratory-analysis}{%
+\section{Data Preparation and Exploratory Analysis}\label{data-preparation-and-exploratory-analysis}}
+
+\hypertarget{fire-data-wrangling-and-exploratory-analysis}{%
+\subsection{Fire Data Wrangling and Exploratory Analysis}\label{fire-data-wrangling-and-exploratory-analysis}}
+
+The wildfire data is stored in the California Fire Perimeters dataset as polygons within a shapefile. Since one of our research questions is to study the relationships between fire happened around the Yousemite National Park and the recreational visits, We first used ArcGIS to extract wildfire polygons within a buffer zone around the Yosemite National Park. By looking back to the AQI heatmaps for previous fire seasons, we roughly estimated the average impact area of wildfires in California and decided to use 300 miles as the distance of the buffer zone (see Figure \ref{fig:buffer} \& \ref{fig:AQI} in Appendix).
+After imported wildfire data into R, we selected only fire extent and recorded time and excluded records without either of these two values. We then formed a new dataset by summarizing fire counts and sum extent by month.
+Figure \ref{fig:FireExp1} plot all the individual wildfires from 1999 to 2019.
+\includegraphics{CodeFinal_files/figure-latex/FireExp1-1.pdf}
+
+\hypertarget{visitation-data-wrangling-exploratory-analysis}{%
+\subsection{visitation data wrangling \& exploratory analysis}\label{visitation-data-wrangling-exploratory-analysis}}
+
+After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analysing trends over time, we created a date column using the lubridate function.
+
+\begin{tabular}{r|r|r|l}
+\hline
+Year & Month & Recreational Visits & Date\\
+\hline
+2019 & 1 & 116746 & 2019-01-01\\
+\hline
+2019 & 2 & 111665 & 2019-02-01\\
+\hline
+2019 & 3 & 173610 & 2019-03-01\\
+\hline
+2019 & 4 & 297207 & 2019-04-01\\
+\hline
+2019 & 5 & 393004 & 2019-05-01\\
+\hline
+2019 & 6 & 496625 & 2019-06-01\\
+\hline
+\end{tabular}
+
+Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to understand visitation trends. Figure \ref{fig:VisitDataExp1} visualized general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's narrative. Figure \ref{fig:VisitDataExp2} displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.
+
+\begin{figure}
+\centering
+\includegraphics{CodeFinal_files/figure-latex/VisitDataExp1-1.pdf}
+\caption{\label{fig:VisitDataExp1}Visitation trends between 1999 and 2019}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics{CodeFinal_files/figure-latex/VisitDataExp2-1.pdf}
+\caption{\label{fig:VisitDataExp2}Visitation to Yosemite between 2019-2019 (by month)}
+\end{figure}
+
+\newpage
+
+\hypertarget{analysis}{%
+\section{Analysis}\label{analysis}}
+
+\hypertarget{question-1-time-series-analysis}{%
+\subsection{Question 1: Time Series analysis}\label{question-1-time-series-analysis}}
+
+To better understand the trend of wildfire and recreational visitation in Yosemite through time, we conducted time series analysis for each dataset separately.
+
+\hypertarget{timeseries-analysis-for-fire-data}{%
+\subsubsection{Timeseries analysis for fire data}\label{timeseries-analysis-for-fire-data}}
+
+We fist analysed the general and decomposed (seasonal) trend of wildfire data.
+Figure \ref{fig:TSplotfire} shows that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. One unexpected phenomenon is that, as Figure \ref{fig:FireExp1} above showed, more larger fires have been recorded after 2000, but the time series analysis here indicates a drop in sum fire extent at the very end of the 20-year period. After checking the processed dataset, we also confirmed a similar drop in fire counts. One possible explanation for these is that there is more incomplete records in 2019 and were dropped in both data selecting and wrangling steps.
+
+\begin{figure}
+\centering
+\includegraphics{CodeFinal_files/figure-latex/TSplotfire-1.pdf}
+\caption{\label{fig:TSplotfire}Time Series analysis for wilfire data in Yosemite (1999-2019)}
+\end{figure}
+
+\hypertarget{time-series-analysis-of-visitation-data}{%
+\subsubsection{Time Series Analysis of Visitation Data}\label{time-series-analysis-of-visitation-data}}
+
+We performed a time series analysis of visitation data to understand the overall trend to examine whether there is an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019. Based on the decomposed plot (Fig.\ref{fig:TSplotvisit}) of the data, the data has seasonality and is trending downwards.
+
+Since the decreasing trend was not consisten with our initial exploratory analysis of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation. The p-value is less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park.
+
+\begin{figure}
+\centering
+\includegraphics{CodeFinal_files/figure-latex/TSplotvisit-1.pdf}
+\caption{\label{fig:TSplotvisit}Time Series analysis for visitation data in Yosemite (1999-2019)}
+\end{figure}
+
+\hypertarget{question-2-modeling-relationship-between-visitation-and-fire}{%
+\subsection{Question 2: Modeling relationship between visitation and fire}\label{question-2-modeling-relationship-between-visitation-and-fire}}
+
+We used linear model to test our hypothesis of relationship between visitation and fire around Yosemite.
+We first looked at the correlation plot (Fig. \ref{fig:corrplot}) of the variables and decided to include year, month, sum fire extent, and fire counts as independent variables in our model.
+\includegraphics{CodeFinal_files/figure-latex/corrplot-1.pdf}
+
+Since we already seen a nonlinear trend of visitation through months, we set month as factor for our model. Using the step wise method, the independent variables left in the reduced model include fire counts and month. According to the statistical test, fire counts and several specific months are significant.
+Table \ref{tab:regression} below only includes some of the significant variables from the reduced model, the full regression result see Table \ref{tab:regressionF} in appendix. The adjusted R-square for the model is 0.9103.
+
+\begin{table}
+
+\caption{\label{tab:regression}Table 1. Regression table for the reduced model. }
+\centering
+\begin{tabular}[t]{l|r|r|r|r}
+\hline
+Predictor & Estimate & SE & t statistic & p value\\
+\hline
+(Intercept) & 106044.1 & 16609.6 & 6.38 & 0.000\\
+\hline
+as.factor(Month)7 & 446765.4 & 23920.9 & 18.68 & 0.000\\
+\hline
+as.factor(Month)8 & 459878.0 & 22486.2 & 20.45 & 0.000\\
+\hline
+as.factor(Month)9 & 342508.0 & 21667.9 & 15.81 & 0.000\\
+\hline
+as.factor(Month)10 & 223204.6 & 20571.4 & 10.85 & 0.000\\
+\hline
+Firecounts & 880.8 & 310.3 & 2.84 & 0.005\\
+\hline
+\end{tabular}
+\end{table}
+
+Finally, we compared the model fitted value with actual fire extent. The comparasion is showed in Fig. \ref{fig:fitplot}. The plot suggests that our model captured most of the variation of recreational visitation but still missed some peaks.
+
+\begin{figure}
+\centering
+\includegraphics{CodeFinal_files/figure-latex/fitplot-1.pdf}
+\caption{\label{fig:fitplot}Comparision of linear model fitting result and actual fire extent.}
+\end{figure}
+
+\newpage
+
+\hypertarget{summary-and-conclusions}{%
+\section{Summary and Conclusions}\label{summary-and-conclusions}}
+
+This study aim at finiding the effect of wildfire frequency and size on recreational visitation to Yosemite National Park from 1999 to 2019.\\
+Through time series analysis, we found that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. The recreational visitation in Yosemite National Park also has seasonality and is trending downwards.\\
+By testing linear models with stepwise method, we concluded that monthly fire counts and month of the year are more significant in explaining variation of recreational visitation than year and monthly sum of fire extent. The result suggest that fire counts may have greater impact on people's outdoor plan than fire size and people might be more sensitive to high fires frequency comparing to larger fires.
+
+\newpage
+
+\hypertarget{appendix}{%
+\section{Appendix}\label{appendix}}
+
+\includegraphics[width=0.5\textwidth,height=\textheight]{Output/buffer.JPG}
+\includegraphics[width=0.5\textwidth,height=\textheight]{Output/AirQualityMap.JPG}
+\newline
+Table of regression model
+\ref{tab:regressionF}
+
+\begin{table}
+
+\caption{\label{tab:regressionF}Full regression table for the reduced model}
+\centering
+\begin{tabular}[t]{l|r|r|r|r}
+\hline
+Predictor & Estimate & SE & t statistic & p-value\\
+\hline
+(Intercept) & 106044.1 & 16609.6 & 6.38 & 0.000\\
+\hline
+as.factor(Month)2 & 9418.8 & 22937.7 & 0.41 & 0.682\\
+\hline
+as.factor(Month)3 & 45826.5 & 21267.7 & 2.15 & 0.032\\
+\hline
+as.factor(Month)4 & 124887.2 & 21028.1 & 5.94 & 0.000\\
+\hline
+as.factor(Month)5 & 241030.5 & 20654.6 & 11.67 & 0.000\\
+\hline
+as.factor(Month)6 & 359513.7 & 22083.2 & 16.28 & 0.000\\
+\hline
+as.factor(Month)7 & 446765.4 & 23920.9 & 18.68 & 0.000\\
+\hline
+as.factor(Month)8 & 459878.0 & 22486.2 & 20.45 & 0.000\\
+\hline
+as.factor(Month)9 & 342508.0 & 21667.9 & 15.81 & 0.000\\
+\hline
+as.factor(Month)10 & 223204.6 & 20571.4 & 10.85 & 0.000\\
+\hline
+as.factor(Month)11 & 56777.7 & 20829.8 & 2.73 & 0.007\\
+\hline
+as.factor(Month)12 & 30003.3 & 22935.3 & 1.31 & 0.192\\
+\hline
+Firecounts & 880.8 & 310.3 & 2.84 & 0.005\\
+\hline
+\end{tabular}
+\end{table}
+
+\end{document}
