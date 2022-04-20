@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r Load the Data}
 
 #Load the data
-
+install.packages("repr")
 library(readr)
 Visitation_by_Month <- read_csv("./Visitation_by_Month.csv")
 getwd()
@@ -46,7 +46,7 @@ head(Visitation_by_month_gathered)
 summary(Visitation_by_month_gathered$Recreational_Visits)
 
 
-
+options(rpr.plot.width = 4, repr.plot.height = 2)
 Visitation_by_month_plot <- ggplot(Visitation_by_month_gathered, aes(x = Date, y = Recreational_Visits)) +
   geom_point()+
   geom_smooth()

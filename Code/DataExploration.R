@@ -1,4 +1,5 @@
 # fire
+options(rpr.plot.width = 4, repr.plot.height = 2)
 fireplot <- ggplot(data = fire)+
   geom_point(aes(x = Date,y = REPORT_AC,color="red"))+
   ylab("Fire Extent (Acre)")+

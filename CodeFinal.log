@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.1.31)  20 APR 2022 11:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2021/W32TeX) (preloaded format=pdflatex 2022.1.31)  20 APR 2022 11:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -492,67 +492,67 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 
 [3] [4]
 
-LaTeX Warning: Reference `fig:buffer' on page 5 undefined on input line 130.
+LaTeX Warning: Reference `fig:buffer' on page 5 undefined on input line 132.
 
 
-LaTeX Warning: Reference `fig:AQI' on page 5 undefined on input line 130.
+LaTeX Warning: Reference `fig:AQI' on page 5 undefined on input line 132.
 
 <CodeFinal_files/figure-latex/FireExp1-1.pdf, id=100, 469.755pt x 325.215pt>
 File: CodeFinal_files/figure-latex/FireExp1-1.pdf Graphic file (type pdf)
 <use CodeFinal_files/figure-latex/FireExp1-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/FireExp1-1.pdf  used on input line 136.
-(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<CodeFinal_files/figure-latex/VisitDataExp1-1.pdf, id=103, 469.755pt x 325.215pt>
-File: CodeFinal_files/figure-latex/VisitDataExp1-1.pdf Graphic file (type pdf)
-<use CodeFinal_files/figure-latex/VisitDataExp1-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/VisitDataExp1-1.pdf  used on input line 167.
+Package pdftex.def Info: CodeFinal_files/figure-latex/FireExp1-1.pdf  used on input line 138.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
 [5] [6 <./CodeFinal_files/figure-latex/FireExp1-1.pdf>]
-<CodeFinal_files/figure-latex/VisitDataExp2-1.pdf, id=121, 469.755pt x 325.215pt>
+<CodeFinal_files/figure-latex/VisitDataExp1-1.pdf, id=119, 469.755pt x 325.215pt>
+File: CodeFinal_files/figure-latex/VisitDataExp1-1.pdf Graphic file (type pdf)
+<use CodeFinal_files/figure-latex/VisitDataExp1-1.pdf>
+Package pdftex.def Info: CodeFinal_files/figure-latex/VisitDataExp1-1.pdf  used on input line 171.
+(pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
+<CodeFinal_files/figure-latex/VisitDataExp2-1.pdf, id=120, 469.755pt x 325.215pt>
 File: CodeFinal_files/figure-latex/VisitDataExp2-1.pdf Graphic file (type pdf)
 <use CodeFinal_files/figure-latex/VisitDataExp2-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/VisitDataExp2-1.pdf  used on input line 173.
+Package pdftex.def Info: CodeFinal_files/figure-latex/VisitDataExp2-1.pdf  used on input line 177.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[7 <./CodeFinal_files/figure-latex/VisitDataExp1-1.pdf>] [8 <./CodeFinal_files/figure-latex/VisitDataExp2-1.pdf>]
-<CodeFinal_files/figure-latex/TSplotfire-1.pdf, id=147, 469.755pt x 325.215pt>
+[7] [8 <./CodeFinal_files/figure-latex/VisitDataExp1-1.pdf>] [9 <./CodeFinal_files/figure-latex/VisitDataExp2-1.pdf>]
+<CodeFinal_files/figure-latex/TSplotfire-1.pdf, id=151, 469.755pt x 325.215pt>
 File: CodeFinal_files/figure-latex/TSplotfire-1.pdf Graphic file (type pdf)
 <use CodeFinal_files/figure-latex/TSplotfire-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/TSplotfire-1.pdf  used on input line 195.
+Package pdftex.def Info: CodeFinal_files/figure-latex/TSplotfire-1.pdf  used on input line 199.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[9 <./CodeFinal_files/figure-latex/TSplotfire-1.pdf>]
-<CodeFinal_files/figure-latex/TSplotvisit-1.pdf, id=164, 469.755pt x 325.215pt>
+[10 <./CodeFinal_files/figure-latex/TSplotfire-1.pdf>]
+<CodeFinal_files/figure-latex/TSplotvisit-1.pdf, id=168, 469.755pt x 325.215pt>
 File: CodeFinal_files/figure-latex/TSplotvisit-1.pdf Graphic file (type pdf)
 <use CodeFinal_files/figure-latex/TSplotvisit-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/TSplotvisit-1.pdf  used on input line 208.
+Package pdftex.def Info: CodeFinal_files/figure-latex/TSplotvisit-1.pdf  used on input line 212.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-<CodeFinal_files/figure-latex/corrplot-1.pdf, id=166, 469.755pt x 325.215pt>
+<CodeFinal_files/figure-latex/corrplot-1.pdf, id=170, 469.755pt x 325.215pt>
 File: CodeFinal_files/figure-latex/corrplot-1.pdf Graphic file (type pdf)
 <use CodeFinal_files/figure-latex/corrplot-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/corrplot-1.pdf  used on input line 219.
+Package pdftex.def Info: CodeFinal_files/figure-latex/corrplot-1.pdf  used on input line 223.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[10 <./CodeFinal_files/figure-latex/TSplotvisit-1.pdf>] [11 <./CodeFinal_files/figure-latex/corrplot-1.pdf>]
-<CodeFinal_files/figure-latex/fitplot-1.pdf, id=191, 469.755pt x 325.215pt>
+[11 <./CodeFinal_files/figure-latex/TSplotvisit-1.pdf>] [12 <./CodeFinal_files/figure-latex/corrplot-1.pdf>]
+<CodeFinal_files/figure-latex/fitplot-1.pdf, id=195, 469.755pt x 325.215pt>
 File: CodeFinal_files/figure-latex/fitplot-1.pdf Graphic file (type pdf)
 <use CodeFinal_files/figure-latex/fitplot-1.pdf>
-Package pdftex.def Info: CodeFinal_files/figure-latex/fitplot-1.pdf  used on input line 253.
+Package pdftex.def Info: CodeFinal_files/figure-latex/fitplot-1.pdf  used on input line 257.
 (pdftex.def)             Requested size: 469.75386pt x 325.2142pt.
-[12] [13 <./CodeFinal_files/figure-latex/fitplot-1.pdf>] [14]
-<Output/buffer.JPG, id=211, 1399.2275pt x 1379.1525pt>
+[13] [14 <./CodeFinal_files/figure-latex/fitplot-1.pdf>] [15]
+<Output/buffer.JPG, id=215, 1399.2275pt x 1379.1525pt>
 File: Output/buffer.JPG Graphic file (type jpg)
 <use Output/buffer.JPG>
-Package pdftex.def Info: Output/buffer.JPG  used on input line 272.
+Package pdftex.def Info: Output/buffer.JPG  used on input line 275.
 (pdftex.def)             Requested size: 234.87646pt x 231.50664pt.
-<Output/AirQualityMap.JPG, id=212, 1323.94624pt x 1009.7725pt>
+<Output/AirQualityMap.JPG, id=216, 1323.94624pt x 1009.7725pt>
 File: Output/AirQualityMap.JPG Graphic file (type jpg)
 <use Output/AirQualityMap.JPG>
-Package pdftex.def Info: Output/AirQualityMap.JPG  used on input line 273.
+Package pdftex.def Info: Output/AirQualityMap.JPG  used on input line 276.
 (pdftex.def)             Requested size: 234.86574pt x 179.13187pt.
 
-Overfull \hbox (2.59789pt too wide) in paragraph at lines 272--277
+Overfull \hbox (2.59789pt too wide) in paragraph at lines 275--280
 [] [] 
  []
 
-[15 <./Output/buffer.JPG> <./Output/AirQualityMap.jpg>] (./CodeFinal.aux)
+[16 <./Output/buffer.JPG> <./Output/AirQualityMap.jpg>] (./CodeFinal.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -560,18 +560,18 @@ Package rerunfilecheck Info: File `CodeFinal.out' has not changed.
 (rerunfilecheck)             Checksum: 6AFBFCB199893A61A51AD3D1E07BDABB;2163.
  ) 
 Here is how much of TeX's memory you used:
- 11790 strings out of 480247
- 186689 string characters out of 5894228
- 494407 words of memory out of 5000000
+ 11791 strings out of 480247
+ 186696 string characters out of 5894228
+ 493411 words of memory out of 5000000
  29475 multiletter control sequences out of 15000+600000
  514888 words of font info for 67 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 60i,8n,63p,1102b,409s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,8n,63p,823b,409s stack positions out of 5000i,500n,10000p,200000b,80000s
 {c:/Users/gabri/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/gabri/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/gabri/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/gabri/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb>
-Output written on CodeFinal.pdf (15 pages, 1276023 bytes).
+Output written on CodeFinal.pdf (16 pages, 1276359 bytes).
 PDF statistics:
- 250 PDF objects out of 1000 (max. 8388607)
- 208 compressed objects within 3 object streams
- 52 named destinations out of 1000 (max. 500000)
+ 254 PDF objects out of 1000 (max. 8388607)
+ 211 compressed objects within 3 object streams
+ 53 named destinations out of 1000 (max. 500000)
  126 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -70,6 +70,8 @@ Figure \@ref(fig:FireExp1) plot all the individual wildfires from 1999 to 2019.
 print(fireplot)
 ```
 
+\newpage
+
 ## Visitation data wrangling & exploratory analysis
 After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analyzing trends over time, we created a date column using the lubridate function. 
 ```{r Wrangling table, echo=FALSE}
@@ -142,8 +144,7 @@ print(modelplot)
 
 \newpage
 # Summary and Conclusions
-This study aimed to find the relationship between wildfire frequency and size and recreational visitation to Yosemite National Park from 1999 to 2019.    
-Through time series analysis, we found that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. The recreational visitation in Yosemite National Park also has seasonality and is trending downwards.     
+This study aimed to find the relationship between wildfire frequency and size and recreational visitation to Yosemite National Park from 1999 to 2019. Through time series analysis, we found that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. The recreational visitation in Yosemite National Park also has seasonality and is trending downwards.     
 
 By testing linear models with the stepwise method, we concluded that monthly fire counts and month of the year are significant in explaining variation of recreational visitation while year and monthly sum of fire extent were not. The result suggest that fire counts may have greater impact on people's outdoor plan than fire size and people might be more sensitive to high fires frequency comparing to larger fires. This might indicate that people are able to adjust their recreation plans when there are large, less frequent fires during the year but are less able to reschedule their visits when there are numerous small fires. These findings can help NPS land managers and personnel plan for recreational visitation based on the expected frequency of fire events during any given year. 
 
