@@ -18,7 +18,6 @@ TSplotvisit <- plot(Visitation_by_month_Decomposed)
 #mostly monotonic trend - visitation appears to be decreasing overall
 # Run SMK test
 Visitation_by_month_trend1 <- Kendall::SeasonalMannKendall(Visitation_by_month_gathered_ts)
-#Answer: The seasonal Mann-Kendall test is the most appropriate because this ozone data has seasonality as seen in the decomposed time series plot and is non-parametric.
 # Inspect results
 Visitation_by_month_trend1
 summary(Visitation_by_month_trend1)
@@ -27,6 +26,16 @@ Visitation_by_month_trend2 <- trend::smk.test(Visitation_by_month_gathered_ts)
 # Inspect results
 Visitation_by_month_trend2
 summary(Visitation_by_month_trend2)
+
+#for mean annual visitation rate
+Visitation_by_year <- Visitation_by_month_gathered %>%
+  group_by(Year) %>%
+  summarise(summary = mean(Recreational_Visits))
+Visitation_by_year$Year <- ym( paste(Visitation_by_year$Year, "1", sep="-"))
+head(Visitation_by_month_gathered)
+Visitation_by_year_ts <- ts(Visitation_by_month_gathered$Recreational_Visits, start = c(1999,1))
+#Mann-Kendall analysis annual visitation
+Visitation_by_year_trend<- Kendall::MannKendall(Visitation_by_year_ts)
 
 # Modeling relationship between visitation and fire
 library(corrplot)

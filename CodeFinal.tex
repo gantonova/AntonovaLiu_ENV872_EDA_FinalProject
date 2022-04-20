@@ -108,9 +108,9 @@
 \hypertarget{rationale-and-research-questions}{%
 \section{Rationale and Research Questions}\label{rationale-and-research-questions}}
 
-Wildfire activity in California has increased five-fold since the 1970s. This is largely due to the drying of vegetation that serves as fuel for fire as climate change causes temperatures to rise. Scientists largely predict that the intensity and frequency of wildfire will continue to increase as climate change persists and the population of people living in wildland areas increases.
+Wildfire activity in California has increased five-fold since the 1970s. This is largely due to the drying of vegetation that serves as fuel for fire as climate change causes temperatures to rise. Scientists predict that the intensity and frequency of wildfire will continue to increase as climate change persists and the population of people living in wildland areas increases.
 
-Yosemite National Park is the most visited national park in California and has experienced impacts on natural and recreational resources due to increasing visitation. Fire has also shaped the landscape in Yosemite for thousands of years. However, due to the combination of land management practices like fire suppression and the impact of climate change, fire frequency and extent have increased in the last several decades. Extensive fires can result in poor air quality and park closures, which could result in result in reduces visitation numbers in years with frequent and expansive fire events. To understand the relationship between visitation and wildfire in Yosemite, we explore the following research question: Did wildfire frequency and size affect recreational visitation to Yosemite National Park from 1999-2019? We also examine the question has there been an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019 to understand whether the general perception shared on the NPS website that visitation is generally increasing is supported.
+Yosemite National Park is the most visited national park in California and has experienced impacts on natural and recreational resources due to increasing visitation. Fire has also shaped the landscape in Yosemite for thousands of years. However, due to the combination of land management practices like fire suppression and the impact of climate change, fire frequency and extent have increased in the last several decades. Extensive fires can result in poor air quality and park closures, which could result in reduced visitation numbers in years with frequent and severe fire events. To understand the relationship between visitation and wildfire in Yosemite, we explore the following research questions: \textbf{Did wildfire frequency and size affect recreational visitation in Yosemite National Park between 1999 and 2019?} To better understand changes in visitation and wildfire we also examine the research question: \textbf{Has there been an increasing or decreasing visitation and wildfire frequency in Yosemite National Park between 1999 and 2019?}
 
 \newpage
 
@@ -127,15 +127,20 @@ The \href{https://irma.nps.gov/STATS/Reports/Park/YOSE}{National Park Service VU
 \hypertarget{fire-data-wrangling-and-exploratory-analysis}{%
 \subsection{Fire Data Wrangling and Exploratory Analysis}\label{fire-data-wrangling-and-exploratory-analysis}}
 
-The wildfire data is stored in the California Fire Perimeters dataset as polygons within a shapefile. Since one of our research questions is to study the relationships between fire happened around the Yousemite National Park and the recreational visits, We first used ArcGIS to extract wildfire polygons within a buffer zone around the Yosemite National Park. By looking back to the AQI heatmaps for previous fire seasons, we roughly estimated the average impact area of wildfires in California and decided to use 300 miles as the distance of the buffer zone (see Figure \ref{fig:buffer} \& \ref{fig:AQI} in Appendix).
-After imported wildfire data into R, we selected only fire extent and recorded time and excluded records without either of these two values. We then formed a new dataset by summarizing fire counts and sum extent by month.
+The wildfire data is stored in the California Fire Perimeters dataset as polygons within a shapefile. Since one of our research questions is to study the relationships between wildfire around the Yosemite National Park and the recreational visits, we first used ArcGIS to extract wildfire polygons within a buffer zone around the Yosemite National Park. By looking back to the AQI heatmaps for previous fire seasons, we roughly estimated the average impact area of wildfires in California and decided to use 300 miles as the distance of the buffer zone (see Figure \ref{fig:buffer} \& \ref{fig:AQI} in Appendix).
+After we imported wildfire data into R, we selected only fire extent and recorded time and excluded records without either of these two values. We then formed a new dataset by summarizing fire counts and sum extent by month.
 Figure \ref{fig:FireExp1} plot all the individual wildfires from 1999 to 2019.
+
+\begin{figure}
+\centering
 \includegraphics{CodeFinal_files/figure-latex/FireExp1-1.pdf}
+\caption{\label{fig:FireExp1}Wildfires within 300 miles buffer zone near Yosemite (1909 to 2019}
+\end{figure}
 
 \hypertarget{visitation-data-wrangling-exploratory-analysis}{%
-\subsection{visitation data wrangling \& exploratory analysis}\label{visitation-data-wrangling-exploratory-analysis}}
+\subsection{Visitation data wrangling \& exploratory analysis}\label{visitation-data-wrangling-exploratory-analysis}}
 
-After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analysing trends over time, we created a date column using the lubridate function.
+After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analyzing trends over time, we created a date column using the lubridate function.
 
 \begin{tabular}{r|r|r|l}
 \hline
@@ -155,7 +160,7 @@ Year & Month & Recreational Visits & Date\\
 \hline
 \end{tabular}
 
-Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to understand visitation trends. Figure \ref{fig:VisitDataExp1} visualized general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's narrative. Figure \ref{fig:VisitDataExp2} displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.
+Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to help us understand visitation trends. Figure \ref{fig:VisitDataExp1} visualized general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's website. Figure \ref{fig:VisitDataExp2} displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.
 
 \begin{figure}
 \centering
@@ -196,7 +201,7 @@ Figure \ref{fig:TSplotfire} shows that the wildfire around Yosemite National Par
 
 We performed a time series analysis of visitation data to understand the overall trend to examine whether there is an increasing or decreasing visitation trend for Yosemite National Park between 1999 and 2019. Based on the decomposed plot (Fig.\ref{fig:TSplotvisit}) of the data, the data has seasonality and is trending downwards.
 
-Since the decreasing trend was not consisten with our initial exploratory analysis of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation. The p-value is less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park.
+Since the decreasing trend was not consistent with our initial exploratory analysis and plot of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation. The p-value is less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park.
 
 \begin{figure}
 \centering
@@ -207,16 +212,20 @@ Since the decreasing trend was not consisten with our initial exploratory analys
 \hypertarget{question-2-modeling-relationship-between-visitation-and-fire}{%
 \subsection{Question 2: Modeling relationship between visitation and fire}\label{question-2-modeling-relationship-between-visitation-and-fire}}
 
-We used linear model to test our hypothesis of relationship between visitation and fire around Yosemite.
-We first looked at the correlation plot (Fig. \ref{fig:corrplot}) of the variables and decided to include year, month, sum fire extent, and fire counts as independent variables in our model.
+We used a multiple linear regression to test our research question regarding the relationship between visitation and fire around Yosemite. We first looked at the correlation plot (Fig. \ref{fig:corrplot}) of the variables and decided to include year, month, sum fire extent, and fire counts as independent variables in our model.
+
+\begin{figure}
+\centering
 \includegraphics{CodeFinal_files/figure-latex/corrplot-1.pdf}
+\caption{\label{fig:corrplot}Correlation plot for wildfire, time, and visitation.}
+\end{figure}
 
 Since we already seen a nonlinear trend of visitation through months, we set month as factor for our model. Using the step wise method, the independent variables left in the reduced model include fire counts and month. According to the statistical test, fire counts and several specific months are significant.
-Table \ref{tab:regression} below only includes some of the significant variables from the reduced model, the full regression result see Table \ref{tab:regressionF} in appendix. The adjusted R-square for the model is 0.9103.
+Table \ref{tab:regression} below only includes some of the significant variables from the reduced model, the full regression result see Table \ref{tab:regressionF} in appendix. The adjusted R-square for the model is 0.9103, which indicates that over 91\% of data is fit by the regression model.
 
 \begin{table}
 
-\caption{\label{tab:regression}Table 1. Regression table for the reduced model. }
+\caption{\label{tab:regression}Regression table for the reduced model. }
 \centering
 \begin{tabular}[t]{l|r|r|r|r}
 \hline
@@ -237,7 +246,7 @@ Firecounts & 880.8 & 310.3 & 2.84 & 0.005\\
 \end{tabular}
 \end{table}
 
-Finally, we compared the model fitted value with actual fire extent. The comparasion is showed in Fig. \ref{fig:fitplot}. The plot suggests that our model captured most of the variation of recreational visitation but still missed some peaks.
+Finally, we compared the model fitted value with actual fire extent. The comparison is shown in Fig. \ref{fig:fitplot}. The plot suggests that our model captured most of the variation of recreational visitation but still missed some peaks.
 
 \begin{figure}
 \centering
@@ -250,9 +259,10 @@ Finally, we compared the model fitted value with actual fire extent. The compara
 \hypertarget{summary-and-conclusions}{%
 \section{Summary and Conclusions}\label{summary-and-conclusions}}
 
-This study aim at finiding the effect of wildfire frequency and size on recreational visitation to Yosemite National Park from 1999 to 2019.\\
-Through time series analysis, we found that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. The recreational visitation in Yosemite National Park also has seasonality and is trending downwards.\\
-By testing linear models with stepwise method, we concluded that monthly fire counts and month of the year are more significant in explaining variation of recreational visitation than year and monthly sum of fire extent. The result suggest that fire counts may have greater impact on people's outdoor plan than fire size and people might be more sensitive to high fires frequency comparing to larger fires.
+This study aimed to find the relationship between wildfire frequency and size and recreational visitation to Yosemite National Park from 1999 to 2019.\\
+Through time series analysis, we found that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. The recreational visitation in Yosemite National Park also has seasonality and is trending downwards.
+
+By testing linear models with the stepwise method, we concluded that monthly fire counts and month of the year are significant in explaining variation of recreational visitation while year and monthly sum of fire extent were not. The result suggest that fire counts may have greater impact on people's outdoor plan than fire size and people might be more sensitive to high fires frequency comparing to larger fires. This might indicate that people are able to adjust their recreation plans when there are large, less frequent fires during the year but are less able to reschedule their visits when there are numerous small fires. These findings can help NPS land managers and personnel plan for recreational visitation based on the expected frequency of fire events during any given year.
 
 \newpage
 

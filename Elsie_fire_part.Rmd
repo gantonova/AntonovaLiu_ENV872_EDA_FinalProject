@@ -131,7 +131,6 @@ plot(Visitation_by_month_Decomposed)
 
 Visitation_by_month_trend1 <- Kendall::SeasonalMannKendall(Visitation_by_month_gathered_ts)
 
-#Answer: The seasonal Mann-Kendall test is the most appropriate because this ozone data has seasonality as seen in the decomposed time series plot and is non-parametric.
 
 # Inspect results
 Visitation_by_month_trend1
