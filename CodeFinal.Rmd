@@ -62,11 +62,11 @@ source("Code/analysis.R")
 
 ## Fire Data Wrangling and Exploratory Analysis
 
-The wildfire data is stored in the California Fire Perimeters dataset as polygons within a shapefile. Since one of our research questions is to study the relationships between wildfire around the Yosemite National Park and the recreational visits, we first used ArcGIS to extract wildfire polygons within a buffer zone around the Yosemite National Park. By looking back to the AQI heatmaps for previous fire seasons, we roughly estimated the average impact area of wildfires in California and decided to use 300 miles as the distance of the buffer zone (see Figure \@ref(fig:buffer)  & \@ref(fig:AQI) in Appendix). 
+The wildfire data is stored in the California Fire Perimeters dataset as polygons within a shapefile. Since one of our research questions is to study the relationships between wildfire around the Yosemite National Park and the recreational visits, we first used ArcGIS to extract wildfire polygons within a buffer zone around the Yosemite National Park. By looking back to the AQI heatmaps for previous fire seasons, we roughly estimated the average impact area of wildfires in California and decided to use 300 miles as the distance of the buffer zone (see Figure A.1  & A.2 in Appendix). 
 After we imported wildfire data into R, we selected only fire extent and recorded time and excluded records without either of these two values. We then formed a new dataset by summarizing fire counts and sum extent by month.
 Figure \@ref(fig:FireExp1) plot all the individual wildfires from 1999 to 2019.
 
-```{r FireExp1, fig.cap="Wildfires within 300 miles buffer zone near Yosemite (1909 to 2019"}
+```{r FireExp1, fig.cap="Wildfires within 300 miles buffer zone near Yosemite (1909 to 2019)",out.width = '60%', fig.align='center'}
 print(fireplot)
 ```
 
@@ -74,19 +74,21 @@ print(fireplot)
 
 ## Visitation data wrangling & exploratory analysis
 After viewing the visitation data, we wrangeled the dataset using the pivotlonger command to create a tidy dataset, for easier analysis. Since we were interested in analyzing trends over time, we created a date column using the lubridate function. 
-```{r Wrangling table, echo=FALSE}
-visit2 <- head(Visitation_by_month_gathered)
-knitr::kable(visit2, col.names = c('Year', 'Month', 'Recreational Visits', 'Date'))
-```
 
-Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset. Using ggplot2, we created two scatterplots to help us understand visitation trends. Figure \@ref(fig:VisitDataExp1) visualized general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's website. Figure \@ref(fig:VisitDataExp2) displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.  
-
-```{r VisitDataExp1, fig.cap="Visitation trends between 1999 and 2019"}
+Once the dataset was tidy and data wrangling was finalized, we performed some preliminary data exploration. We used simple functions like head() and summary() to examine the tidy dataset (Table 1.). Using ggplot2, we created two scatterplots to help us understand visitation trends. Figure \@ref(fig:VisitDataExp1) visualized general visitation trends between 1999 and 2019. Based on the plot and regression line, overall visitation to Yosemite National Park is generally increasing, which is consistent with National Park Service's website. Figure \@ref(fig:VisitDataExp2) displays visitation to Yosemite between 2019-2019 grouped by month and shows clear seasonality, with peak season between June and August and shoulder seasons with lower visitation between September and May.  
+```{r VisitDataExp1, fig.cap="Visitation trends between 1999 and 2019", out.width = '60%', fig.align='center'}
 print(Visitation_by_month_plot)
 ```
 
-```{r VisitDataExp2, fig.cap="Visitation to Yosemite between 2019-2019 (by month)"}
+```{r VisitDataExp2, fig.cap="Visitation to Yosemite between 2019-2019 (by month)",out.width = '60%', fig.align='center'}
 print(visitation_by_month_plot2)
+```
+\newpage
+```{r Processed, echo=FALSE}
+visit2 <- head(Visitation_by_month_gathered)
+knitr::kable(visit2, 
+             caption = "Processed visitation data format",
+             col.names = c('Year', 'Month', 'Recreational Visits', 'Date'))
 ```
 
 \newpage
@@ -102,9 +104,10 @@ To better understand the trend of wildfire and recreational visitation in Yosemi
 We fist analysed the general and decomposed (seasonal) trend of wildfire data.
 Figure \@ref(fig:TSplotfire) shows that the wildfire around Yosemite National Park has a clear seasonal trend and had 3 peaks during the last 20 years. One unexpected phenomenon is that, as Figure \@ref(fig:FireExp1) above showed, more larger fires have been recorded after 2000, but the time series analysis here indicates a drop in sum fire extent at the very end of the 20-year period. After checking the processed dataset, we also confirmed a similar drop in fire counts. One possible explanation for these is that there is more incomplete records in 2019 and were dropped in both data selecting and wrangling steps. 
 
-```{r TSplotfire, fig.cap="Time Series analysis for wilfire data in Yosemite (1999-2019)"}
+```{r TSplotfire, fig.cap="Time Series analysis for wilfire data in Yosemite (1999-2019)",out.width = '60%', fig.align='center'}
 plot(fire.Decomposed, main = "Fire Extent Decomposed")
 ```
+
 
 ### Time Series Analysis of Visitation Data
 
@@ -112,7 +115,7 @@ We performed a time series analysis of visitation data to understand the overall
 
 Since the decreasing trend was not consistent with our initial exploratory analysis and plot of the data, we computed the mean annual visitation rate and performed a Mann-Kendall analysis annual visitation. The p-value is less than 0.05, so we reject the null hypothesis that the data is stationary, therefore we have a trend over time. Visitation appears to be decreasing over time in Yosemite National Park.
 
-```{r TSplotvisit, fig.cap="Time Series analysis for visitation data in Yosemite (1999-2019)"}
+```{r TSplotvisit, fig.cap="Time Series analysis for visitation data in Yosemite (1999-2019)",out.width = '60%', fig.align='center'}
 plot(Visitation_by_month_Decomposed)
 ```
 
@@ -120,13 +123,17 @@ plot(Visitation_by_month_Decomposed)
 
 We used a multiple linear regression to test our research question regarding the relationship between visitation and fire around Yosemite. We first looked at the correlation plot (Fig. \@ref(fig:corrplot)) of the variables and decided to include year, month, sum fire extent, and fire counts as independent variables in our model.
 
-```{r corrplot, fig.cap="Correlation plot for wildfire, time, and visitation."}
+```{r corrplot, fig.cap="Correlation plot for wildfire, time, and visitation.",out.width = '60%', fig.align='center'}
 corrplot(yosecorr,method = "number",insig = "label_sig",
          sig.level = c(.05))
 ```
 
 Since we already seen a nonlinear trend of visitation through months, we set month  as factor for our model. Using the step wise method, the independent variables left in the reduced model include fire counts and month. According to the statistical test, fire counts and several specific months are significant. 
-Table \@ref(tab:regression) below only includes some of the significant variables from the reduced model, the full regression result see Table \@ref(tab:regressionF) in appendix. The adjusted R-square for the model is 0.9103, which indicates that over 91% of data is fit by the regression model.
+Table \@ref(tab:regression) below only includes some of the significant variables from the reduced model, the full regression result see Table \@ref(tab:regressionF) in appendix. The adjusted R-square for the model is 0.9103, which indicates that over 91% of data is fit by the regression model.    
+  
+Finally, we compared the model fitted value with actual fire extent. The comparison is shown in Fig. \@ref(fig:fitplot). The plot suggests that our model captured most of the variation of recreational visitation but still missed some peaks.
+
+\newpage
 ```{r regression}
 lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts) %>%
   tidy()%>%
@@ -135,8 +142,6 @@ lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts) %>%
     col.names = c("Predictor", "Estimate", "SE", "t statistic", "p value"),
     digits = c(0, 1, 1, 2, 3))
 ```
-
-Finally, we compared the model fitted value with actual fire extent. The comparison is shown in Fig. \@ref(fig:fitplot). The plot suggests that our model captured most of the variation of recreational visitation but still missed some peaks.
 
 ```{r fitplot, fig.cap="Comparision of linear model fitting result and actual fire extent."}
 print(modelplot)  
@@ -151,11 +156,16 @@ By testing linear models with the stepwise method, we concluded that monthly fir
 
 \newpage
 # Appendix
-![(#fig:buffer) Buffer Zone Decision. Red, orange, and yellow represents 100, 200, to 300 miles buffer zone.](Output/buffer.JPG){width=50%}
-![(#fig:AQI) An example of AQI map for previous fire season used for estimating impact area of wildfires.](Output/AirQualityMap.JPG){width=50%}
-\newline
-Table of regression model
-\@ref(tab:regressionF)
+
+Fig. A.1. Buffer Zone Decision. Red, orange, and yellow represents 100, 200, to 300 miles buffer zone.    
+![Fig. A.1. Buffer Zone Decision. Red, orange, and yellow represents 100, 200, to 300 miles buffer zone.](Output/buffer.JPG){width=50%}
+  
+Fig. A.2. An example of AQI map for previous fire season used for estimating impact area of wildfires.    
+![Fig. A.2. An example of AQI map for previous fire season used for estimating impact area of wildfires.](Output/AirQualityMap.JPG){width=50%}
+  
+
+\newpage
+
 ```{r regressionF, echo=FALSE}
 lm(data=yosefire, Visits ~ as.factor(Month) + Firecounts) %>%
   tidy() %>%

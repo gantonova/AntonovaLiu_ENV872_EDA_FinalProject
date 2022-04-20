@@ -55,7 +55,6 @@ modelplot <- ggplot() +
   geom_line(data = yosefire, aes(x = Date, y = fit, color="Fit")) +
   geom_line(data = yosefire, aes(x = Date, y = Visits, color = "Real")) +
   theme_bw() +
-  ggtitle("Number of Visits through time") +
   theme(plot.title = element_text(hjust = 0.5)) +
   xlab("Date") +
   ylab("Number of Visits")+
